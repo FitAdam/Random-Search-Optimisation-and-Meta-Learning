@@ -21,6 +21,8 @@ from keras.layers import Activation
 from keras.layers import Input, Lambda, Dense, Dropout, Convolution2D, MaxPooling2D, Flatten
 from keras.models import Sequential, Model
 from keras.optimizers import RMSprop
+import tensorflow as tf
+import keras.backend.tensorflow_backend as tfback
 
 path = r'C:\Users\Vdvm\Documents\Projects\AI_project'
 # load array
@@ -28,7 +30,7 @@ path = r'C:\Users\Vdvm\Documents\Projects\AI_project'
 #X = load('yaleExtB_data.npy')
 
 size = 2
-total_sample_size = 10000
+total_sample_size = 100
 
 
 def get_data(size, total_sample_size):
@@ -43,8 +45,8 @@ def get_data(size, total_sample_size):
     count = 0
     
     #initialize the numpy array with the shape of [total_sample, no_of_pairs, dim1, dim2]
-    x_geuine_pair = np.zeros([total_sample_size, 2, 1, dim1, dim2])  # 2 is for pairs
-    y_genuine = np.zeros([total_sample_size, 1])
+    x_geuine_pair = np.zeros([total_sample_size, 2, 1, dim1, dim2,],dtype=np.int8)  # 2 is for pairs
+    y_genuine = np.zeros([total_sample_size, 2, 1, dim1, dim2,],dtype=np.int8) 
     
     for i in range(40):
         for j in range(int(total_sample_size/40)):
@@ -57,8 +59,8 @@ def get_data(size, total_sample_size):
                 ind2 = np.random.randint(10)
             
             # read the two images
-            img1 = read_image('data/orl_faces/s' + str(i+1) + '/' + str(ind1 + 1) + '.pgm', 'rw+')
-            img2 = read_image('data/orl_faces/s' + str(i+1) + '/' + str(ind2 + 1) + '.pgm', 'rw+')
+            img1 = load('yaleExtB_data.npy')
+            img2 = load('yaleExtB_data.npy')
             
             #reduce the size
             img1 = img1[::size, ::size]
@@ -73,8 +75,8 @@ def get_data(size, total_sample_size):
             count += 1
 
     count = 0
-    x_imposite_pair = np.zeros([total_sample_size, 2, 1, dim1, dim2])
-    y_imposite = np.zeros([total_sample_size, 1])
+    x_imposite_pair = np.zeros([total_sample_size, 2, 1, dim1, dim2],dtype=np.uint8)
+    y_imposite =  np.zeros([total_sample_size, 2, 1, dim1, dim2],dtype=np.uint8)
     
     for i in range(int(total_sample_size/10)):
         for j in range(10):
@@ -86,8 +88,8 @@ def get_data(size, total_sample_size):
                 if ind1 != ind2:
                     break
                     
-            img1 = read_image('data/orl_faces/s' + str(ind1+1) + '/' + str(j + 1) + '.pgm', 'rw+')
-            img2 = read_image('data/orl_faces/s' + str(ind2+1) + '/' + str(j + 1) + '.pgm', 'rw+')
+            img1 = load('yaleExtB_data.npy')
+            img2 = load('yaleExtB_data.npy')
 
             img1 = img1[::size, ::size]
             img2 = img2[::size, ::size]
@@ -107,7 +109,7 @@ X, Y = get_data(size, total_sample_size)
 X.shape
 Y.shape
 # split into a training and testing set
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=.25)
+X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=.25)
 
 def build_base_network(input_shape):
     
