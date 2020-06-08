@@ -22,8 +22,12 @@ gnb = GaussianNB()
 
 y_pred = gnb.fit(X_train, y_train).predict(X_test)
 
-print("Number of mislabeled points out of a total %d points : %d"
-        % (X_test.shape[0], (y_test != y_pred).sum()))
+#print("Number of mislabeled points out of a total %d points : %d"
+      #  % (X_test.shape[0], (y_test != y_pred).sum()))
 
-print('The new accuracy score is :')
-print(accuracy_score(y_test, y_pred))
+#print('The new accuracy score is :')
+#print(accuracy_score(y_test, y_pred))
+
+
+y_pred = gnb.predict(X_test) # reocognises the test images 
+print(classification_report(y_test, y_pred)) # the recognition accuracy
