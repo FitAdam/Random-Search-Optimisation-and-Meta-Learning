@@ -7,7 +7,7 @@ from sklearn.ensemble import AdaBoostClassifier
 from sklearn.datasets import make_classification
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import accuracy_score
-from sklearn.ensemble import BaggingClassifier
+
 
 
 print('Loading data...')
@@ -17,32 +17,24 @@ y = load('yaleExtB_target.npy')
 X = load('yaleExtB_data.npy')
 
 # split into a training and testing set
-X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=42)
-"""
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+# PCA 
+nof_prin_components = 1200  # PARAMETER for optimisation in expereiments
+pca = PCA(n_components=nof_prin_components, whiten=True).fit(X_train)
+# applies PCA to the train and test images to calculate the principal components
+X_train_pca = pca.transform(X_train) 
+X_test_pca = pca.transform(X_test)
+
+# train a neural network
 adaboost_clf = AdaBoostClassifier(
-    DecisionTreeClassifier(max_depth=1), n_estimators=1000,
-    algorithm="SAMME.R", learning_rate=0.5, random_state=42)
+    DecisionTreeClassifier(max_depth=1), n_estimators=5000,
+    algorithm="SAMME.R", learning_rate=0.2, random_state=42,)
 
 #train the model
 print('Training the model...')
 
-adaboost_clf.fit(X_train, y_train)
+adaboost_clf.fit(X_train_pca, y_train)
 
-y_pred = adaboost_clf.predict(X_test)
-print('The new accuracy score after AdaBoost and Decision tree classifier is :')
-print(accuracy_score(y_test, y_pred))
-"""
-
-# TO DO 
-# SEPARETE THE CODE AND SEPERATE THE DOC
-new_clf = BaggingClassifier(
-          DecisionTreeClassifier(random_state=42), n_estimators=1000,
-          max_samples=100, bootstrap=False, n_jobs=-1, random_state=42)
-new_clf.fit(X_train, y_train)
-y_pred = new_clf.predict(X_test)
-
-print('The new accuracy score after Bagging and Decision Tree classifier is :')
-print(accuracy_score(y_test, y_pred))
-
-y_pred = new_clf.predict(X_test) # reocognises the test images 
+y_pred = adaboost_clf.predict(X_test_pca)
 print(classification_report(y_test, y_pred)) # the recognition accuracy
