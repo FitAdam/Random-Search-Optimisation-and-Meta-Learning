@@ -4,4 +4,4 @@
 
 
 The strategies such as Random Search, Meta Learning,
-Adaptive Boosting, and Cascade Correlation were use to optimise the structure and parameters of Artificial Neural Networks (ANNs) on a biometric data from yale's face images.
+Adaptive Boosting, and Cascade Correlation were used to optimise the structure and parameters of Artificial Neural Networks (ANNs) on a biometric data from yale's face images.
